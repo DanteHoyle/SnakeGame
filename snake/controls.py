@@ -1,6 +1,6 @@
 import curses
 # import logging
-from snake.snake import Direction, SnakeHead
+from snake.snake import HeadDirection, SnakeHead
 
 class SnakeController:
     def __init__(self, window: curses.window, head_block: SnakeHead) -> None:
@@ -14,10 +14,10 @@ class SnakeController:
 
         match ch:
             case curses.KEY_UP:
-                self.head_block.change_direction(Direction.UP)
+                self.head_block.change_direction(HeadDirection.UP)
             case curses.KEY_DOWN:
-                self.head_block.change_direction(Direction.DOWN)
+                self.head_block.change_direction(HeadDirection.DOWN)
             case curses.KEY_LEFT:
-                self.head_block.change_direction(Direction.LEFT)
+                self.head_block.change_direction(HeadDirection.LEFT)
             case curses.KEY_RIGHT:
-                self.head_block.change_direction(Direction.RIGHT)
+                self.head_block.change_direction(HeadDirection.RIGHT)

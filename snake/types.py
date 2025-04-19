@@ -7,7 +7,7 @@ type Coordinate = tuple[int, int]
 
 class BoundingArea(tuple[int, int]):
     """Used by objects to track the playable area"""
-    def coordinate_is_inbound(self, coord: Coordinate) -> bool:
+    def contains_coordinate(self, coord: Coordinate) -> bool:
         bx, by = self
         cx, cy = coord
 

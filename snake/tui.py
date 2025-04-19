@@ -1,4 +1,5 @@
 import curses
+import logging
 
 from snake.state import GameState
 from snake.types import GameObject
@@ -11,13 +12,13 @@ class UIOverlay(GameObject):
         self.wall_char: str = wall_char
 
     def draw(self, window: curses.window):
-        score_text = f'score: {self.score}'
-        score_line = self.head_snake.bound_y + 1
-        window.addstr(score_line, 0, score_text)
+        """Draws the score and the box around the playing field"""
+        self.draw_score(window)
+        self.draw_border(window)
 
-        bound_x = self.head_snake.bound_x
-        bound_y = self.head_snake.bound_y
-
+    def draw_border(self, window: curses.window):
+        """Draw edge of playable field border. Death logic is handled by the SnakeHead"""
+        bound_x, bound_y = self.head_snake.bound_x, self.head_snake.bound_y
         for x in range(bound_x):
             window.addch(0, x, self.wall_char)
             window.addch(bound_y, x, self.wall_char)
@@ -26,6 +27,10 @@ class UIOverlay(GameObject):
             window.addch(y, 0, self.wall_char)
             window.addch(y, bound_x, self.wall_char)
 
-    @property
-    def score(self) -> int:
-        return sum(1 for _ in self.head_snake) - 1
+    def draw_score(self, window: curses.window):
+        """Calculates the score and draws it to the screen"""
+        score_text = f'score: {self.head_snake.calculate_score()}'
+        score_line = self.head_snake.bound_y + 1
+        window.addstr(score_line, 0, score_text)
+
+        logging.info(score_text)

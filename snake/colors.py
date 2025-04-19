@@ -1,11 +1,9 @@
 import curses
+import logging
 from enum import IntEnum
 
-def init_colors():
-    curses.start_color()
-    curses.init_pair(1, curses.COLOR_YELLOW, curses.COLOR_BLACK)
-    curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_GREEN)
+class Color(IntEnum):
+    PRIMARY = curses.color_pair(1)
+    SECONDARY = curses.color_pair(2)
 
-class Colors(IntEnum):
-    PRIMARY = 1
-    SECONDARY = 2
+type ColorIfColorsEnabled = Color|None

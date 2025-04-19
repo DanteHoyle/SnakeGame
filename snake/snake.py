@@ -3,22 +3,22 @@ import curses
 from typing import Generator
 
 from snake.types import BoundingArea, Coordinate, GameObject, HeadDirection 
-
-from snake.colors import Colors
+from snake.colors import Color, ColorIfColorsEnabled 
 
 class SnakeBody(GameObject):
     """This represents a piece of the snake which the player controls."""
-    def __init__(self, spawn_x: int, spawn_y: int, char: str):
-        self.x = spawn_x
-        self.last_x = spawn_x
+    def __init__(self, spawn_x: int, spawn_y: int, char: str, color: ColorIfColorsEnabled=None):
+        self.x: int = spawn_x
+        self.last_x: int = spawn_x
         self.y = spawn_y
         self.last_y = spawn_y
         # The last block will have next_block be None
         self.next: SnakeBody|None = None
         self.last_x: int = spawn_x
         self.last_y: int = spawn_y
-        self.char = char
-        self.body_char = self.char
+        self.char: str = char
+        self.body_char: str = self.char
+        self.color: ColorIfColorsEnabled = color
 
     def __iter__(self) -> Generator["SnakeBody", None, None]:
         s = self
@@ -27,8 +27,13 @@ class SnakeBody(GameObject):
             s = s.next
 
     def draw(self, window: curses.window) -> None:
-        for s in self:
-            window.addch(s.y, s.x, s.char, Colors.SECONDARY)
+        if self.color:
+            window.addch(self.y, self.x, self.char, self.color)
+        else:
+            window.addch(self.y, self.x, self.char)
+
+        if self.next:
+            self.next.draw(window)
 
     def set_position(self, new_x: int, new_y: int) -> None:
         self.last_x = self.x
@@ -48,7 +53,13 @@ class SnakeBody(GameObject):
     def collides_with(self, other: "SnakeBody") -> bool:
         return self.x == other.x and self.y == other.y
 
+    def calculate_score(self) -> int:
+        if self.next:
+            return sum(1 for _ in self.next)
+        return 0
+
 class SnakeHead(SnakeBody):
+    """The main Game Object that the player controls"""
     def __init__(self,
                  spawn: Coordinate,
                  bounding: BoundingArea,
@@ -61,6 +72,13 @@ class SnakeHead(SnakeBody):
         self.direction: HeadDirection = HeadDirection.RIGHT
 
         self.boundary: BoundingArea = bounding
+
+    @property
+    def bound_x(self) -> int:
+        return self.boundary[0]
+    @property
+    def bound_y(self) -> int:
+        return self.boundary[1]
 
     def update(self) -> None:
         logging.debug(f'x={self.x}, y={self.y} | {self.last_x=}, {self.last_y=}')
@@ -90,6 +108,9 @@ class SnakeHead(SnakeBody):
 
         return positions
 
+    def die(self):
+        raise RuntimeError("DEAD")
+
     def move_one_space(self):
         next_x = self.x
         next_y = self.y
@@ -103,16 +124,8 @@ class SnakeHead(SnakeBody):
             case HeadDirection.LEFT:
                 next_x -= 1
 
-        if not self.boundary.coordinate_is_inbound((next_x, next_y)):
-            raise RuntimeError("DEAD")
+        if not self.boundary.contains_coordinate((next_x, next_y)):
+            self.die()
 
         self.set_position(next_x, next_y)
 
-    @property
-    def bound_x(self) -> int:
-        x, _ = self.boundary
-        return x
-    @property
-    def bound_y(self) -> int:
-        _, y = self.boundary
-        return y

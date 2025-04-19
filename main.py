@@ -3,14 +3,8 @@ import curses
 import logging
 import argparse
 
-from snake.engine import SnakeGame
+from snake.init import init_window, kill_window, init_colors
 from snake.exceptions import ImpossibleConfigError
-from snake.window import init_window, kill_window
-
-def main(screen: curses.window):
-    # hide the cursor during gameplay
-    game = SnakeGame(screen)
-    game.run()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser('BlockSnake')
@@ -35,11 +29,13 @@ if __name__ == "__main__":
                         filemode='w')
 
     window = init_window()
+    init_colors()
 
+    from snake.engine import SnakeGame
     try:
-        main(window)
+        game = SnakeGame(window)
+        game.run()
     except KeyboardInterrupt:
         logging.debug('Keyboard Interrupt Ignored')
     finally:
         kill_window(window)
-

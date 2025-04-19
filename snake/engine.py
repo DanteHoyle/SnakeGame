@@ -61,7 +61,7 @@ class SnakeGame:
 
     def draw(self) -> None:
         """Draw all game objects to the screen and sleep for a fraction of a second."""
-        self.window.clear()
+        self.window.erase()
         for obj in self.game_objects:
             obj.draw(self.window)
         self.window.refresh()

@@ -5,6 +5,7 @@ import argparse
 
 from snake.engine import SnakeGame
 from snake.exceptions import ImpossibleConfigError
+from snake.window import init_window, kill_window
 
 def main(screen: curses.window):
     # hide the cursor during gameplay
@@ -27,15 +28,18 @@ if __name__ == "__main__":
         case _:
             raise ImpossibleConfigError('verbosity argument outside of possibilities')
 
-
     logging.basicConfig(filename='log.txt',
                         level=level,
                         format='%(asctime)s %(name)s %(levelname)s %(message)s',
                         datefmt='%H:%M:%S',
                         filemode='w')
 
+    window = init_window()
+
     try:
-        curses.wrapper(main)
+        main(window)
     except KeyboardInterrupt:
         logging.debug('Keyboard Interrupt Ignored')
-        pass
+    finally:
+        kill_window(window)
+

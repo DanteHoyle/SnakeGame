@@ -3,42 +3,43 @@ import random
 import curses
 
 from snake.snake import SnakeHead
-from snake.types import Coordinate, BoundingArea
+from snake.types import GameObject
 
-class SnakeFood:
+class SnakeFood(GameObject):
     """Food object that when touched by SnakeHead, causes it to grow"""
-    def __init__(self, head: SnakeHead, bounding: BoundingArea, excluded: Coordinate, char: str) -> None:
+    def __init__(self, head: SnakeHead, char: str) -> None:
 
         self.snake: SnakeHead = head
 
-        bound_x, bound_y = bounding
-        self.bound_x: int = bound_x
-        self.bound_y: int = bound_y
+        self.bound_x: int = head.bound_y
+        self.bound_y: int = head.bound_y
         self.x: int = 0
         self.y: int = 0
         self.char: str = char
-        self.pick_new_spot([excluded])
+
+        self.pick_new_spot()
 
     def update(self) -> None:
+        """Checks if snake overlaps the food object and grows the snake"""
         if self.collides_with_snake():
             self.snake.grow()
-            exclude = list(self.snake.body_positions())
-            self.pick_new_spot(exclude)
+            self.pick_new_spot()
 
-    def draw(self, screen: curses.window) -> None:
-        screen.addch(self.y, self.x, self.char)
+    def draw(self, window: curses.window) -> None:
+        window.addch(self.y, self.x, self.char)
 
-    def pick_new_spot(self, excluded: list[Coordinate]=[]) -> None:
+    def pick_new_spot(self) -> None:
         """Picks a new spot for the food item"""
-        logging.debug(f'New Spot Exclude List:\n{excluded=}')
+        exclude = list(self.snake.body_positions())
         while True:
-            new_x = random.randint(0, self.bound_x)
-            new_y = random.randint(0, self.bound_y)
-            if (new_x, new_y) not in excluded:
+            new_x = random.randint(1, self.bound_x - 1)
+            new_y = random.randint(1, self.bound_y - 1)
+            if (new_x, new_y) not in exclude:
                 self.x = new_x
                 self.y = new_y
                 break
         logging.info(f'New Food at ({new_x}, {new_y})')
 
     def collides_with_snake(self) -> bool:
+        """Returns true if the snake object and the food object share the same coordiantes"""
         return self.x == self.snake.x and self.y == self.snake.y

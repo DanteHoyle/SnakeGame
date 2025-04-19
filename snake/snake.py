@@ -2,9 +2,11 @@ import logging
 import curses
 from typing import Generator
 
-from snake.types import BoundingArea, Coordinate, HeadDirection 
+from snake.types import BoundingArea, Coordinate, GameObject, HeadDirection 
 
-class SnakeBody:
+from snake.colors import Colors
+
+class SnakeBody(GameObject):
     """This represents a piece of the snake which the player controls."""
     def __init__(self, spawn_x: int, spawn_y: int, char: str):
         self.x = spawn_x
@@ -24,9 +26,9 @@ class SnakeBody:
             yield s
             s = s.next
 
-    def draw(self, screen: curses.window) -> None:
+    def draw(self, window: curses.window) -> None:
         for s in self:
-            screen.addch(s.y, s.x, s.char)
+            window.addch(s.y, s.x, s.char, Colors.SECONDARY)
 
     def set_position(self, new_x: int, new_y: int) -> None:
         self.last_x = self.x
@@ -58,9 +60,7 @@ class SnakeHead(SnakeBody):
         self.body_char: str = body_char
         self.direction: HeadDirection = HeadDirection.RIGHT
 
-        bound_x, bound_y = bounding
-        self.bound_x: int = bound_x
-        self.bound_y: int = bound_y
+        self.boundary: BoundingArea = bounding
 
     def update(self) -> None:
         logging.debug(f'x={self.x}, y={self.y} | {self.last_x=}, {self.last_y=}')
@@ -91,12 +91,28 @@ class SnakeHead(SnakeBody):
         return positions
 
     def move_one_space(self):
+        next_x = self.x
+        next_y = self.y
         match self.direction:
             case HeadDirection.UP:
-                self.set_position(self.x, self.y - 1)
+                next_y -= 1
             case HeadDirection.DOWN:
-                self.set_position(self.x, self.y + 1)
+                next_y += 1
             case HeadDirection.RIGHT:
-                self.set_position(self.x + 1, self.y)
+                next_x += 1
             case HeadDirection.LEFT:
-                self.set_position(self.x - 1, self.y)
+                next_x -= 1
+
+        if not self.boundary.coordinate_is_inbound((next_x, next_y)):
+            raise RuntimeError("DEAD")
+
+        self.set_position(next_x, next_y)
+
+    @property
+    def bound_x(self) -> int:
+        x, _ = self.boundary
+        return x
+    @property
+    def bound_y(self) -> int:
+        _, y = self.boundary
+        return y

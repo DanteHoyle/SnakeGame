@@ -4,7 +4,7 @@ import time
 
 from snake.config import Config
 from snake.colors import Color, ColorManager
-from snake.types import Coordinate, BoundingArea, GameObject
+from snake.types import GameObject
 from snake.exceptions import InvalidGameStateError
 from snake.controls import SnakeController
 from snake.snake import SnakeHead
@@ -27,14 +27,7 @@ class SnakeGame:
 
     def run(self) -> None:
         """Function which starts the game loop."""
-        snake_start_pos: Coordinate = (self.cfg.start_x, self.cfg.start_y)
-        playable_area: BoundingArea = BoundingArea((self.cfg.border_x, self.cfg.border_y))
-
-        head_snake = SnakeHead(snake_start_pos,
-                               playable_area,
-                               self.cfg.snake_head_char,
-                               self.cfg.snake_body_char,
-                               Color.PRIMARY) 
+        head_snake = SnakeHead(self.cfg) 
 
         snake_food = SnakeFood(head_snake, self.cfg.food_char)
 
@@ -49,16 +42,14 @@ class SnakeGame:
         self.state.enter_gameloop()
 
         while self.state != States.EXIT:
-            self.main_loop()
+            match self.state:
+                case States.GAMELOOP:
+                    self.gameloop()
 
-    def main_loop(self) -> None:
+    def gameloop(self) -> None:
         """Main Loop, this function gets called once per 'tick'."""
-        match self.state:
-            case States.GAMELOOP:
-                self.update()
-                self.draw()
-            case _:
-                raise InvalidGameStateError(self.state)
+        self.update()
+        self.draw()
 
     def update(self) -> None:
         """Updates all of the SnakeType objects held in self.game_objects."""

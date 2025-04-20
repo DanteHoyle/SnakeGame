@@ -3,7 +3,8 @@ import curses
 from typing import Generator
 
 from snake.types import BoundingArea, Coordinate, GameObject, HeadDirection
-from snake.colors import ColorIfColorsEnabled
+from snake.colors import Color, ColorIfColorsEnabled
+from snake.config import Config
 
 class SnakeBody(GameObject):
     """This represents a piece of the snake which the player controls."""
@@ -62,18 +63,12 @@ class SnakeBody(GameObject):
 
 class SnakeHead(SnakeBody):
     """The main Game Object that the player controls"""
-    def __init__(self,
-                 spawn: Coordinate,
-                 bounding: BoundingArea,
-                 head_char: str,
-                 body_char: str,
-                 color: ColorIfColorsEnabled=None) -> None:
-        spawn_x, spawn_y = spawn
-        super().__init__(spawn_x, spawn_y, head_char, color)
+    def __init__(self, config: Config) -> None:
+        super().__init__(config.start_x, config.start_y, config.snake_head_char, Color.PRIMARY)
         # Overwrite headchar set by constructor.
-        self.body_char: str = body_char
+        self.body_char: str = config.snake_body_char
         self.direction: HeadDirection = HeadDirection.RIGHT
-        self.boundary: BoundingArea = bounding
+        self.boundary: BoundingArea = BoundingArea((config.border_x, config.border_y))
 
     def update(self) -> None:
         logging.debug(f'x={self.x}, y={self.y} | {self.last_x=}, {self.last_y=}')

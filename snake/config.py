@@ -11,7 +11,8 @@ class Config(NamedTuple):
     snake_head_char: str
     snake_body_char: str
     food_char: str
-    wall_char: str
+    vertical_wall_char: str
+    horizontal_wall_char: str
     frame_delay: float
 
     @classmethod
@@ -28,7 +29,8 @@ class Config(NamedTuple):
             food_start_x = cfg_json['food']['start']['y'],
             food_start_y = cfg_json['food']['start']['y'],
             food_char = cfg_json['food']['char'],
-            wall_char = cfg_json['border']['char'],
+            horizontal_wall_char = cfg_json['border']['horizontal_wall_char'],
+            vertical_wall_char = cfg_json['border']['vertical_wall_char'],
             frame_delay = cfg_json['frame_delay'],
         )
 

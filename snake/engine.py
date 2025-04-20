@@ -9,7 +9,7 @@ from snake.exceptions import InvalidGameStateError
 from snake.controls import SnakeController
 from snake.snake import SnakeHead
 from snake.food import SnakeFood
-from snake.tui import UIOverlay
+from snake.tui import Boundary, ScoreOverlay
 from snake.state import GameState, States
 
 class SnakeGame:
@@ -28,14 +28,14 @@ class SnakeGame:
     def run(self) -> None:
         """Function which starts the game loop."""
         head_snake = SnakeHead(self.cfg) 
-
         snake_food = SnakeFood(head_snake, self.cfg.food_char)
-
-        ui = UIOverlay(self.state, head_snake, self.cfg.wall_char)
+        ui = ScoreOverlay(self.state, head_snake)
+        boundary = Boundary(head_snake, self.cfg.vertical_wall_char, self.cfg.horizontal_wall_char)
 
         self.game_objects = [head_snake,
                              snake_food,
-                             ui]
+                             ui,
+                             boundary]
 
         self.snake_controller: SnakeController = SnakeController(self.window, head_snake)
 

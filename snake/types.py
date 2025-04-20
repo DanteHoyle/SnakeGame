@@ -1,7 +1,5 @@
 from enum import StrEnum
-from typing import NamedTuple
 import curses
-
 # Used by SnakeFood in pick_new_spot for readability 
 type Coordinate = tuple[int, int]
 
@@ -18,25 +16,6 @@ class HeadDirection(StrEnum):
     DOWN = 'Λ'
     LEFT = '>'
     RIGHT = '<'
-
-class States(StrEnum):
-    INIT = 'Initialization'
-    GAMELOOP = 'Game Loop'
-    DEADSNAKE = 'Dead Snake'
-    EXIT = 'Exiting'
-
-class Config(NamedTuple):
-    border_x: int = 30
-    border_y: int = 15
-    start_x: int = 10
-    start_y: int = 10
-    food_start_x: int = 30
-    food_start_y: int = 20
-    snake_head_char: str = '<'
-    snake_body_char: str = '#'
-    food_char: str = '@'
-    wall_char: str = '='
-    frame_delay: float = 0.1
 
 class GameObject:
     def update(self):

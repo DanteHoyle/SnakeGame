@@ -1,6 +1,11 @@
 import logging
+from enum import StrEnum
 
-from snake.types import States
+class States(StrEnum):
+    INIT = 'Initialization'
+    GAMELOOP = 'Game Loop'
+    DEADSNAKE = 'Dead Snake'
+    EXIT = 'Exiting'
 
 class GameState:
     def __init__(self):

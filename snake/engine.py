@@ -2,17 +2,19 @@ import curses
 import logging
 import time
 
-from snake.types import States, Config, Coordinate, BoundingArea, GameObject
+from snake.config import Config
+from snake.colors import Color, ColorManager
+from snake.types import Coordinate, BoundingArea, GameObject
 from snake.exceptions import InvalidGameStateError
 from snake.controls import SnakeController
 from snake.snake import SnakeHead
 from snake.food import SnakeFood
 from snake.tui import UIOverlay
-from snake.state import GameState
+from snake.state import GameState, States
 
 class SnakeGame:
     """Main Game Class"""
-    def __init__(self, window: curses.window, cfg: Config=Config()) -> None:
+    def __init__(self, window: curses.window, cfg: Config) -> None:
         """Initialize the main game objects."""
         self.window: curses.window = window
 
@@ -20,6 +22,7 @@ class SnakeGame:
         self.state: GameState = GameState()
         self.cfg: Config = cfg
         self.game_objects: list["GameObject"] = []
+        self.color_manager: ColorManager = ColorManager()
         logging.debug('SnakeGame initialized')
 
     def run(self) -> None:
@@ -30,13 +33,17 @@ class SnakeGame:
         head_snake = SnakeHead(snake_start_pos,
                                playable_area,
                                self.cfg.snake_head_char,
-                               self.cfg.snake_body_char) 
+                               self.cfg.snake_body_char,
+                               Color.PRIMARY) 
+
         snake_food = SnakeFood(head_snake, self.cfg.food_char)
+
         ui = UIOverlay(self.state, head_snake, self.cfg.wall_char)
 
         self.game_objects = [head_snake,
                              snake_food,
                              ui]
+
         self.snake_controller: SnakeController = SnakeController(self.window, head_snake)
 
         self.state.enter_gameloop()
@@ -62,8 +69,10 @@ class SnakeGame:
     def draw(self) -> None:
         """Draw all game objects to the screen and sleep for a fraction of a second."""
         self.window.erase()
+
         for obj in self.game_objects:
             obj.draw(self.window)
+        self.window.bkgd(' ', Color.EMPTY)
         self.window.refresh()
         time.sleep(self.screendelay)
 

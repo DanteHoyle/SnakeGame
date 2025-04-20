@@ -1,0 +1,17 @@
+{
+    "frame_delay": 0.1,
+    "border": {
+        "width": 30,
+        "height": 15,
+        "char": "="
+    },
+    "snake": {
+        "start": { "x": 10, "y": 10 },
+        "head_char": "<",
+        "body_char": "#"
+    },
+    "food": {
+        "start": { "x": 20, "y": 10 },
+        "char": "@"
+    }
+}

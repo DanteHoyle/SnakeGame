@@ -1,3 +1,4 @@
+import argparse
 import curses
 import logging
 
@@ -8,18 +9,24 @@ def init_window() -> curses.window:
     curses.curs_set(0)
     window.keypad(True)
     window.nodelay(True)
-
-    logging.debug('Window Initialized!')
-    return window
-
-def init_colors():
-    logging.debug('Colors Initialized!')
     curses.start_color()
-    curses.init_pair(1, curses.COLOR_YELLOW, curses.COLOR_BLACK)
-    curses.init_pair(2, curses.COLOR_WHITE, curses.COLOR_GREEN)
+    curses.use_default_colors()
+
+    logging.debug('Finished initializing window')
+    return window
 
 def kill_window(window: curses.window) -> None:
     curses.nocbreak()
     window.keypad(False)
     curses.echo()
     curses.endwin()
+    logging.debug('Finished killing window')
+
+def parse_args() -> dict[str, str]:
+    parser = argparse.ArgumentParser('BlockSnake')
+    parser.add_argument('--verbosity', '-V', choices=('debug', 'info', 'warn', 'error'), default='info')
+    parser.add_argument('--config', '-C', default='data/config.json', type=str, help = 'Path of the config file to use')
+    args = parser.parse_args()
+
+    args_as_dict = vars(args)
+    return args_as_dict

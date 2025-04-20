@@ -1,0 +1,16 @@
+[
+    {
+        "name": "default",
+        "primary": { "fg": "green", "bg": "black" },
+        "secondary": { "fg": "red", "bg": "black" },
+        "empty": { "fg": "white", "bg": "black" },
+        "border": { "fg": "white", "bg": "black" }
+    },
+    {
+        "name": "christmas",
+        "primary": { "fg": "red", "bg": "white" },
+        "secondary": { "fg": "cyan", "bg": "white" },
+        "empty": { "fg": "white", "bg": "white" },
+        "border": { "fg": "black", "bg": "white" }
+    }
+]

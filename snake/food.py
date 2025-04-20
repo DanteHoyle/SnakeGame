@@ -2,6 +2,7 @@ import logging
 import random
 import curses
 
+from snake.colors import Color
 from snake.snake import SnakeHead
 from snake.types import GameObject
 
@@ -11,11 +12,12 @@ class SnakeFood(GameObject):
 
         self.snake: SnakeHead = head
 
-        self.bound_x: int = head.bound_y
-        self.bound_y: int = head.bound_y
+        self.boundary = head.boundary
         self.x: int = 0
         self.y: int = 0
         self.char: str = char
+
+        self.color: Color = Color.SECONDARY
 
         self.pick_new_spot()
 
@@ -26,14 +28,15 @@ class SnakeFood(GameObject):
             self.pick_new_spot()
 
     def draw(self, window: curses.window) -> None:
-        window.addch(self.y, self.x, self.char)
+        window.addch(self.y, self.x, self.char, self.color)
 
     def pick_new_spot(self) -> None:
         """Picks a new spot for the food item"""
         exclude = list(self.snake.body_positions())
         while True:
-            new_x = random.randint(1, self.bound_x - 1)
-            new_y = random.randint(1, self.bound_y - 1)
+            bound_x, bound_y = self.boundary
+            new_x = random.randint(1, bound_x - 1)
+            new_y = random.randint(1, bound_y - 1)
             if (new_x, new_y) not in exclude:
                 self.x = new_x
                 self.y = new_y

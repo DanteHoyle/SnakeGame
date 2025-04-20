@@ -2,20 +2,21 @@ import logging
 import curses
 from typing import Generator
 
-from snake.types import BoundingArea, Coordinate, GameObject, HeadDirection 
-from snake.colors import Color, ColorIfColorsEnabled 
+from snake.types import BoundingArea, Coordinate, GameObject, HeadDirection
+from snake.colors import ColorIfColorsEnabled
 
 class SnakeBody(GameObject):
     """This represents a piece of the snake which the player controls."""
     def __init__(self, spawn_x: int, spawn_y: int, char: str, color: ColorIfColorsEnabled=None):
+        # Position
         self.x: int = spawn_x
         self.last_x: int = spawn_x
         self.y = spawn_y
         self.last_y = spawn_y
         # The last block will have next_block be None
         self.next: SnakeBody|None = None
-        self.last_x: int = spawn_x
-        self.last_y: int = spawn_y
+
+        # Graphical Elements
         self.char: str = char
         self.body_char: str = self.char
         self.color: ColorIfColorsEnabled = color
@@ -48,12 +49,13 @@ class SnakeBody(GameObject):
         if next := self.next:
             next.grow()
         else:
-            self.next = SnakeBody(self.last_x, self.last_y, self.body_char)
+            self.next = SnakeBody(self.last_x, self.last_y, self.body_char, self.color)
 
     def collides_with(self, other: "SnakeBody") -> bool:
         return self.x == other.x and self.y == other.y
 
     def calculate_score(self) -> int:
+        """score = number of fruit eaten"""
         if self.next:
             return sum(1 for _ in self.next)
         return 0
@@ -64,21 +66,14 @@ class SnakeHead(SnakeBody):
                  spawn: Coordinate,
                  bounding: BoundingArea,
                  head_char: str,
-                 body_char: str) -> None:
+                 body_char: str,
+                 color: ColorIfColorsEnabled=None) -> None:
         spawn_x, spawn_y = spawn
-        super().__init__(spawn_x, spawn_y, head_char)
+        super().__init__(spawn_x, spawn_y, head_char, color)
         # Overwrite headchar set by constructor.
         self.body_char: str = body_char
         self.direction: HeadDirection = HeadDirection.RIGHT
-
         self.boundary: BoundingArea = bounding
-
-    @property
-    def bound_x(self) -> int:
-        return self.boundary[0]
-    @property
-    def bound_y(self) -> int:
-        return self.boundary[1]
 
     def update(self) -> None:
         logging.debug(f'x={self.x}, y={self.y} | {self.last_x=}, {self.last_y=}')
@@ -111,7 +106,7 @@ class SnakeHead(SnakeBody):
     def die(self):
         raise RuntimeError("DEAD")
 
-    def move_one_space(self):
+    def next_position(self) -> Coordinate:
         next_x = self.x
         next_y = self.y
         match self.direction:
@@ -123,6 +118,12 @@ class SnakeHead(SnakeBody):
                 next_x += 1
             case HeadDirection.LEFT:
                 next_x -= 1
+
+        next_coord: Coordinate = (next_x, next_y)
+        return next_coord
+
+    def move_one_space(self):
+        next_x, next_y = self.next_position()
 
         if not self.boundary.contains_coordinate((next_x, next_y)):
             self.die()

@@ -8,16 +8,16 @@ class SnakeController:
         self.head_block: SnakeHead = head_block
 
     def handle_input(self) -> None:
-        ch = self.window.getch()
+        ch: int = self.window.getch()
 
-        # logging.debug(f'User Input: {ch}')
+        if ch == curses.KEY_UP:
+            self.head_block.change_direction(HeadDirection.UP)
+        elif ch == curses.KEY_DOWN:
+            self.head_block.change_direction(HeadDirection.DOWN)
+        elif ch == curses.KEY_LEFT:
+            self.head_block.change_direction(HeadDirection.LEFT)
+        elif ch == curses.KEY_RIGHT:
+            self.head_block.change_direction(HeadDirection.RIGHT)
+        elif ch in (ord('q'), ord('Q')):
+            self.head_block.die()
 
-        match ch:
-            case curses.KEY_UP:
-                self.head_block.change_direction(HeadDirection.UP)
-            case curses.KEY_DOWN:
-                self.head_block.change_direction(HeadDirection.DOWN)
-            case curses.KEY_LEFT:
-                self.head_block.change_direction(HeadDirection.LEFT)
-            case curses.KEY_RIGHT:
-                self.head_block.change_direction(HeadDirection.RIGHT)

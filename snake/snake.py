@@ -78,6 +78,8 @@ class SnakeHead(SnakeBody):
     def update(self) -> None:
         logging.debug(f'x={self.x}, y={self.y} | {self.last_x=}, {self.last_y=}')
         self.move_one_space()
+        if self.collides_with_body():
+            self.die()
 
     def change_direction(self, new_direction: HeadDirection) -> bool:
         """Attempst to change the direction of the lead block."""
@@ -96,14 +98,14 @@ class SnakeHead(SnakeBody):
         return True
 
     def body_positions(self) -> list[Coordinate]:
-        """Generator function yields the coordinate of every snake body part"""
+        """Creates a list of Coordinates recording all x,y positions of the snakes body"""
         positions: list[Coordinate] = []
         for s in self:
             positions.append((s.x, s.y))
 
         return positions
 
-    def die(self):
+    def die(self) -> None:
         raise RuntimeError("DEAD")
 
     def next_position(self) -> Coordinate:
@@ -119,10 +121,13 @@ class SnakeHead(SnakeBody):
             case HeadDirection.LEFT:
                 next_x -= 1
 
-        next_coord: Coordinate = (next_x, next_y)
-        return next_coord
+        return (next_x, next_y)
 
-    def move_one_space(self):
+    def move_one_space(self) -> None:
+        """
+        Checks if it's safe to move another space before hitting a boundary
+        Then checks
+        """
         next_x, next_y = self.next_position()
 
         if not self.boundary.contains_coordinate((next_x, next_y)):
@@ -130,3 +135,14 @@ class SnakeHead(SnakeBody):
 
         self.set_position(next_x, next_y)
 
+    def collides_with_body(self) -> SnakeBody|None:
+        """
+        Returns a SnakeBody object if the SnakeHead is intersecting any SnakeBody pieces,
+        otherwise, it reurns None.
+        """
+        for body in self:
+            if body is self:
+                continue
+            if self.collides_with(body):
+                return body
+        return None

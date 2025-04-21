@@ -3,19 +3,20 @@ import random
 import curses
 
 from snake.colors import Color
+from snake.config import Config
 from snake.snake import SnakeHead
 from snake.types import GameObject
 
 class SnakeFood(GameObject):
     """Food object that when touched by SnakeHead, causes it to grow."""
-    def __init__(self, head: SnakeHead, char: str) -> None:
+    def __init__(self, config: Config, head: SnakeHead) -> None:
 
         self.snake: SnakeHead = head
 
         self.boundary = head.boundary
-        self.x: int = 0
-        self.y: int = 0
-        self.char: str = char
+        self.x: int = config.food_start_x
+        self.y: int = config.food_start_y
+        self.char: str = config.food_char
 
         self.color: Color = Color.SECONDARY
 

@@ -62,7 +62,7 @@ class SnakeBody(GameObject):
         return 0
 
 class SnakeHead(SnakeBody):
-    """The main Game Object that the player controls"""
+    """The main Game Object that the player controls."""
     def __init__(self, config: Config) -> None:
         super().__init__(config.start_x, config.start_y, config.snake_head_char, Color.PRIMARY)
         # Overwrite headchar set by constructor.
@@ -93,7 +93,7 @@ class SnakeHead(SnakeBody):
         return True
 
     def body_positions(self) -> list[Coordinate]:
-        """Creates a list of Coordinates recording all x,y positions of the snakes body"""
+        """Creates a list of Coordinates recording all x,y positions of the snakes body."""
         positions: list[Coordinate] = []
         for s in self:
             positions.append((s.x, s.y))

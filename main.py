@@ -26,7 +26,6 @@ if __name__ == "__main__":
 
     window = init_window()
 
-
     from snake.engine import SnakeGame
     try:
         game = SnakeGame(window, config)

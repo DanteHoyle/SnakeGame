@@ -7,7 +7,7 @@ from snake.snake import SnakeHead
 from snake.types import GameObject
 
 class SnakeFood(GameObject):
-    """Food object that when touched by SnakeHead, causes it to grow"""
+    """Food object that when touched by SnakeHead, causes it to grow."""
     def __init__(self, head: SnakeHead, char: str) -> None:
 
         self.snake: SnakeHead = head
@@ -22,7 +22,7 @@ class SnakeFood(GameObject):
         self.pick_new_spot()
 
     def update(self) -> None:
-        """Checks if snake overlaps the food object and grows the snake"""
+        """Checks if snake overlaps the food object and grows the snake."""
         if self.collides_with_snake():
             self.snake.grow()
             self.pick_new_spot()
@@ -31,7 +31,7 @@ class SnakeFood(GameObject):
         window.addch(self.y, self.x, self.char, self.color)
 
     def pick_new_spot(self) -> None:
-        """Picks a new spot for the food item"""
+        """Picks a new spot for the food item."""
         exclude = list(self.snake.body_positions())
         while True:
             bound_x, bound_y = self.boundary
@@ -44,5 +44,5 @@ class SnakeFood(GameObject):
         logging.info(f'New Food at ({new_x}, {new_y})')
 
     def collides_with_snake(self) -> bool:
-        """Returns true if the snake object and the food object share the same coordiantes"""
+        """Returns true if the snake object and the food object share the same coordiantes."""
         return self.x == self.snake.x and self.y == self.snake.y

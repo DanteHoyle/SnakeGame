@@ -5,7 +5,6 @@ import time
 from snake.config import Config
 from snake.colors import Color, ColorManager
 from snake.types import GameObject
-from snake.exceptions import InvalidGameStateError
 from snake.controls import SnakeController
 from snake.snake import SnakeHead
 from snake.food import SnakeFood
@@ -29,12 +28,12 @@ class SnakeGame:
         """Function which starts the game loop."""
         head_snake = SnakeHead(self.cfg) 
         snake_food = SnakeFood(head_snake, self.cfg.food_char)
-        ui = ScoreOverlay(self.state, head_snake)
+        score = ScoreOverlay(self.state, head_snake)
         boundary = Boundary(head_snake, self.cfg.vertical_wall_char, self.cfg.horizontal_wall_char)
 
         self.game_objects = [head_snake,
                              snake_food,
-                             ui,
+                             score,
                              boundary]
 
         self.snake_controller: SnakeController = SnakeController(self.window, head_snake)

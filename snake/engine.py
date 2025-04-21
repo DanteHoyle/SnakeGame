@@ -9,7 +9,7 @@ from snake.controls import SnakeController
 from snake.snake import SnakeHead
 from snake.food import SnakeFood
 from snake.tui import Boundary, ScoreOverlay
-from snake.state import GameState, States
+from snake.state import SharedGameState, Status
 
 class SnakeGame:
     """Main Game Class"""
@@ -18,7 +18,7 @@ class SnakeGame:
         self.window: curses.window = window
 
         self.screendelay: float = cfg.frame_delay 
-        self.state: GameState = GameState()
+        self.game_state: SharedGameState = SharedGameState()
         self.cfg: Config = cfg
         self.game_objects: list["GameObject"] = []
         self.color_manager: ColorManager = ColorManager()
@@ -26,9 +26,9 @@ class SnakeGame:
 
     def run(self) -> None:
         """Function which starts the game loop."""
-        head_snake = SnakeHead(self.cfg) 
-        snake_food = SnakeFood(head_snake, self.cfg.food_char)
-        score = ScoreOverlay(self.state, head_snake)
+        head_snake = SnakeHead(self.cfg, self.game_state) 
+        snake_food = SnakeFood(self.cfg, head_snake)
+        score = ScoreOverlay(self.cfg, self.game_state)
         boundary = Boundary(head_snake, self.cfg.vertical_wall_char, self.cfg.horizontal_wall_char)
 
         self.game_objects = [head_snake,
@@ -38,11 +38,11 @@ class SnakeGame:
 
         self.snake_controller: SnakeController = SnakeController(self.window, head_snake)
 
-        self.state.enter_gameloop()
+        self.game_state.state = Status.GAMELOOP
 
-        while self.state != States.EXIT:
-            match self.state:
-                case States.GAMELOOP:
+        while self.game_state.state != Status.EXIT:
+            match self.game_state.state:
+                case Status.GAMELOOP:
                     self.gameloop()
 
     def gameloop(self) -> None:

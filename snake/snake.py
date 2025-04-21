@@ -2,6 +2,7 @@ import logging
 import curses
 from typing import Generator
 
+from snake.state import SharedGameState, Status
 from snake.types import BoundingArea, Coordinate, GameObject, HeadDirection
 from snake.colors import Color, ColorIfColorsEnabled
 from snake.config import Config
@@ -9,7 +10,6 @@ from snake.config import Config
 class SnakeBody(GameObject):
     """This represents a piece of the snake which the player controls."""
     def __init__(self, spawn_x: int, spawn_y: int, char: str, color: ColorIfColorsEnabled=None):
-        # Position
         self.x: int = spawn_x
         self.last_x: int = spawn_x
         self.y = spawn_y
@@ -63,18 +63,31 @@ class SnakeBody(GameObject):
 
 class SnakeHead(SnakeBody):
     """The main Game Object that the player controls."""
-    def __init__(self, config: Config) -> None:
+    def __init__(self, config: Config, state: SharedGameState) -> None:
         super().__init__(config.start_x, config.start_y, config.snake_head_char, Color.PRIMARY)
         # Overwrite headchar set by constructor.
         self.body_char: str = config.snake_body_char
         self.direction: HeadDirection = HeadDirection.RIGHT
         self.boundary: BoundingArea = BoundingArea((config.border_x, config.border_y))
+        self.game_state: SharedGameState = state
 
     def update(self) -> None:
-        logging.debug(f'x={self.x}, y={self.y} | {self.last_x=}, {self.last_y=}')
-        self.move_one_space()
-        if self.collides_with_body():
-            self.die()
+        def gameloop() -> None:
+            self.move_one_space()
+            if self.collides_with_body():
+                self.die()
+
+        match self.game_state.state:
+            case Status.GAMELOOP:
+                gameloop()
+
+    def grow(self) -> None:
+        self.game_state.score += 1
+        return super().grow()
+        # if next := self.next:
+        #     next.grow()
+        # else:
+        #     self.next = SnakeBody(self.last_x, self.last_y, self.body_char, self.color)
 
     def change_direction(self, new_direction: HeadDirection) -> bool:
         """Attempst to change the direction of the lead block."""

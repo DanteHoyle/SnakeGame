@@ -2,7 +2,7 @@ import logging
 import random
 import curses
 
-from snake.colors import Color
+from snake.color import Color
 from snake.config import Config
 from snake.snake import SnakeHead
 from snake.types import GameObject

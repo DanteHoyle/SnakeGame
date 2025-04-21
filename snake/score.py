@@ -6,7 +6,7 @@ from snake.config import Config
 from snake.state import SharedGameState
 from snake.color import Color
 
-class ScoreOverlay(GameObject):
+class Score(GameObject):
     def __init__(self, config: Config, state: SharedGameState):
         self.game_state: SharedGameState = state
         self.score_color: Color = Color.SECONDARY

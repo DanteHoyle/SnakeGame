@@ -4,7 +4,7 @@ from typing import Generator
 
 from snake.state import SharedGameState, Status
 from snake.types import BoundingArea, Coordinate, GameObject, HeadDirection
-from snake.colors import Color, ColorIfColorsEnabled
+from snake.color import Color, ColorIfColorsEnabled
 from snake.config import Config
 
 class SnakeBody(GameObject):

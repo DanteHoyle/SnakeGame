@@ -15,14 +15,15 @@ curses_palette_color_map = {
     'yellow': curses.COLOR_YELLOW
 }
 
-def color(color_name: str) -> int:
+def map_color(color_name: str) -> int:
     return curses_palette_color_map[color_name]
 
 class Color(IntEnum):
     PRIMARY = curses.color_pair(1)
     SECONDARY = curses.color_pair(2)
-    EMPTY = curses.color_pair(3)
-    BORDER = curses.color_pair(4)
+    TERTIARY = curses.color_pair(3)
+    EMPTY = curses.color_pair(4)
+    BORDER = curses.color_pair(5)
 
 class ColorPair(NamedTuple):
     fg: int
@@ -30,13 +31,14 @@ class ColorPair(NamedTuple):
 
     @classmethod
     def from_dict(cls, d: dict[str, str]) -> 'ColorPair':
-        return cls(color(d['fg']), color(d['bg']))
+        return cls(map_color(d['fg']), map_color(d['bg']))
 
 
 class Palette(NamedTuple):
     name: str
     primary: ColorPair
     secondary: ColorPair
+    tertiary: ColorPair
     empty: ColorPair
     border: ColorPair
 
@@ -53,11 +55,19 @@ class Palette(NamedTuple):
                 name = name,
                 primary = ColorPair.from_dict(pj['primary']),
                 secondary = ColorPair.from_dict(pj['secondary']),
+                tertiary = ColorPair.from_dict(pj['tertiary']),
                 empty = ColorPair.from_dict(pj['empty']),
                 border = ColorPair.from_dict(pj['border'])
             )
 
         return palettes
+
+    def load_as_palette(self):
+        curses.init_pair(1, self.primary.fg, self.primary.bg)
+        curses.init_pair(2, self.secondary.fg, self.secondary.bg)
+        curses.init_pair(3, self.tertiary.fg, self.tertiary.bg)
+        curses.init_pair(4, self.empty.fg, self.empty.bg)
+        curses.init_pair(5, self.border.fg, self.border.bg)
 
 class ColorManager:
     def __init__(self):
@@ -67,13 +77,8 @@ class ColorManager:
         logging.debug('Finished initializing colors')
 
     def set_palette(self, palette: str) -> None:
-        p = self.palettes[palette]
+        self.palettes[palette].load_as_palette()
 
-        curses.init_pair(1, p.primary.fg, p.primary.bg)
-        curses.init_pair(2, p.secondary.fg, p.secondary.bg)
-        curses.init_pair(3, p.empty.fg, p.empty.bg)
-        curses.init_pair(4, p.border.fg, p.border.bg)
-        logging.info(f'Color Palette Set To {palette}')
 
 type ColorIfColorsEnabled = Color|None
 

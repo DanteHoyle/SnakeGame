@@ -114,6 +114,8 @@ class SnakeHead(SnakeBody):
     def die(self) -> None:
         self.game_state.state = Status.DEADSNAKE
         logging.info('The snake has died')
+        for body in self:
+            body.color = Color.TERTIARY
         # raise RuntimeError("DEAD")
 
     def next_position(self) -> Coordinate:

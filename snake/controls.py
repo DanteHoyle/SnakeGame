@@ -11,6 +11,8 @@ class SnakeController:
     def handle_input(self, window: curses.window) -> None:
         ch: int = window.getch()
 
+        self.handle_quit(ch)
+
         match self.game_state.state:
             case Status.GAMELOOP:
                 self.handle_movement(ch)
@@ -29,4 +31,4 @@ class SnakeController:
 
     def handle_quit(self, ch: int) -> None:
         if ch in (ord('q'), ord('Q')):
-            self.head_block.die()
+            self.game_state.state = Status.EXIT

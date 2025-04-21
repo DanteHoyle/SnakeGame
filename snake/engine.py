@@ -9,7 +9,7 @@ from snake.controls import SnakeController
 from snake.snake import SnakeHead
 from snake.food import SnakeFood
 from snake.boundary import Boundary
-from snake.score import Score
+from snake.text import TextManager
 from snake.state import SharedGameState, Status
 
 class SnakeGame:
@@ -22,20 +22,19 @@ class SnakeGame:
         self.game_state: SharedGameState = SharedGameState()
         self.cfg: Config = cfg
         self.game_objects: list["GameObject"] = []
-        self.color_manager: ColorManager = ColorManager()
+        self.color_manager: ColorManager = ColorManager(cfg.color_palette)
         logging.debug('SnakeGame initialized')
 
     def run(self) -> None:
         """Function which starts the game loop."""
         head_snake = SnakeHead(self.cfg, self.game_state) 
-        snake_food = SnakeFood(self.cfg, head_snake)
-        score = Score(self.cfg, self.game_state)
-        boundary = Boundary(head_snake, self.cfg.vertical_wall_char, self.cfg.horizontal_wall_char)
 
-        self.game_objects = [head_snake,
-                             snake_food,
-                             score,
-                             boundary]
+        self.game_objects = [
+            head_snake,
+            SnakeFood(self.cfg, head_snake),
+            TextManager(self.cfg, self.game_state),
+            Boundary(self.cfg)
+        ]
 
         self.snake_controller: SnakeController = SnakeController(self.game_state, head_snake)
 
@@ -44,7 +43,6 @@ class SnakeGame:
         while self.game_state.state != Status.EXIT:
             self.update()
             self.draw()
-
 
     def update(self) -> None:
         """Updates all of the SnakeType objects held in self.game_objects."""

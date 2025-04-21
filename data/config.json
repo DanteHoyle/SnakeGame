@@ -1,10 +1,11 @@
 {
-    "frame_delay": 0.1,
+    "frame_delay": 0.09,
+    "color_palette": "default",
     "border": {
         "width": 30,
         "height": 15,
-        "vertical_wall_char": "|",
-        "horizontal_wall_char": "-"
+        "vertical_wall_char": "#",
+        "horizontal_wall_char": "#"
     },
     "snake": {
         "start": { "x": 10, "y": 10 },

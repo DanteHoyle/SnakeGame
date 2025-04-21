@@ -3,8 +3,11 @@ import logging
 
 class Status(StrEnum):
     INIT = 'Initialization'
+    SETUPGAME = 'Setting Up the Game'
+    WAITTOSTART = 'Waiting to start'
     GAMELOOP = 'Game Loop'
     DEADSNAKE = 'Dead Snake'
+    SHOWSCORE = 'Show Score'
     EXIT = 'Exiting'
 
 class SharedGameState:
@@ -18,5 +21,5 @@ class SharedGameState:
 
     @state.setter
     def state(self, new_state: Status):
-        logging.info(f'Old State "{self._state.value}" -> New State {new_state.value}')
+        logging.info(f'State is changing: "{self._state.value}" -> "{new_state.value}"')
         self._state = new_state

@@ -5,7 +5,7 @@ import curses
 from snake.color import Color
 from snake.config import Config
 from snake.snake import SnakeHead
-from snake.types import GameObject
+from snake.types import GameObject, Coordinate
 
 class SnakeFood(GameObject):
     """Food object that when touched by SnakeHead, causes it to grow."""
@@ -33,7 +33,10 @@ class SnakeFood(GameObject):
 
     def pick_new_spot(self) -> None:
         """Picks a new spot for the food item."""
-        exclude = list(self.snake.body_positions())
+        exclude: list[Coordinate] = []
+        for s in self.snake:
+            exclude.append((s.x, s.y))
+
         while True:
             bound_x, bound_y = self.boundary
             new_x = random.randint(1, bound_x - 1)

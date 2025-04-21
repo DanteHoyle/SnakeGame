@@ -11,12 +11,6 @@ class BoundingArea(tuple[int, int]):
 
         return (cx >= 1 and cx <= bx-1 and cy >= 1 and cy <= by-1)
 
-class HeadDirection(StrEnum):
-    UP = 'V'
-    DOWN = 'Λ'
-    LEFT = '>'
-    RIGHT = '<'
-
 class GameObject:
     def update(self):
         return

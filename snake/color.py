@@ -70,10 +70,9 @@ class Palette(NamedTuple):
         curses.init_pair(5, self.border.fg, self.border.bg)
 
 class ColorManager:
-    def __init__(self):
+    def __init__(self, init_palette: str):
         self.palettes: dict[str, Palette] = Palette.load_palettes_from_file('data/palettes.json')
-        self.current_palette = 'default'
-        self.set_palette(self.current_palette)
+        self.set_palette(init_palette)
         logging.debug('Finished initializing colors')
 
     def set_palette(self, palette: str) -> None:

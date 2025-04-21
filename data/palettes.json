@@ -1,10 +1,10 @@
 [
     {
         "name": "default",
-        "primary": { "fg": "cyan", "bg": "black" },
-        "secondary": { "fg": "white", "bg": "black" },
-        "tertiary": { "fg": "red", "bg": "black" },
-        "empty": { "fg": "white", "bg": "black" },
+        "primary": { "fg": "green", "bg": "black" },
+        "secondary": { "fg": "red", "bg": "black" },
+        "tertiary": { "fg": "white", "bg": "black" },
+        "empty": { "fg": "black", "bg": "black" },
         "border": { "fg": "green", "bg": "black" }
     },
     {

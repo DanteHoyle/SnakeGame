@@ -14,6 +14,7 @@ class Config(NamedTuple):
     vertical_wall_char: str
     horizontal_wall_char: str
     frame_delay: float
+    color_palette: str
 
     @classmethod
     def from_config_file(cls, file_path: str) -> 'Config':
@@ -32,5 +33,6 @@ class Config(NamedTuple):
             horizontal_wall_char = cfg_json['border']['horizontal_wall_char'],
             vertical_wall_char = cfg_json['border']['vertical_wall_char'],
             frame_delay = cfg_json['frame_delay'],
+            color_palette = cfg_json['color_palette']
         )
 

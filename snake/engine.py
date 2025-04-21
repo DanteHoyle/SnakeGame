@@ -36,23 +36,18 @@ class SnakeGame:
                              score,
                              boundary]
 
-        self.snake_controller: SnakeController = SnakeController(self.window, head_snake)
+        self.snake_controller: SnakeController = SnakeController(self.game_state, head_snake)
 
         self.game_state.state = Status.GAMELOOP
 
         while self.game_state.state != Status.EXIT:
-            match self.game_state.state:
-                case Status.GAMELOOP:
-                    self.gameloop()
+            self.update()
+            self.draw()
 
-    def gameloop(self) -> None:
-        """Main Loop, this function gets called once per 'tick'."""
-        self.update()
-        self.draw()
 
     def update(self) -> None:
         """Updates all of the SnakeType objects held in self.game_objects."""
-        self.snake_controller.handle_input()
+        self.snake_controller.handle_input(self.window)
         for obj in self.game_objects:
             obj.update()
 

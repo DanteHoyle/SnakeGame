@@ -47,6 +47,7 @@ class SnakeBody(GameObject):
             next.set_position(self.last_x, self.last_y)
 
     def grow(self) -> None:
+        """This method causes the snake to grow by one SnakeBody"""
         if next := self.next:
             next.grow()
         else:
@@ -83,11 +84,8 @@ class SnakeHead(SnakeBody):
 
     def grow(self) -> None:
         self.game_state.score += 1
+        logging.info(f'Score increased to {self.game_state.score}')
         return super().grow()
-        # if next := self.next:
-        #     next.grow()
-        # else:
-        #     self.next = SnakeBody(self.last_x, self.last_y, self.body_char, self.color)
 
     def change_direction(self, new_direction: HeadDirection) -> bool:
         """Attempst to change the direction of the lead block."""
@@ -114,7 +112,9 @@ class SnakeHead(SnakeBody):
         return positions
 
     def die(self) -> None:
-        raise RuntimeError("DEAD")
+        self.game_state.state = Status.DEADSNAKE
+        logging.info('The snake has died')
+        # raise RuntimeError("DEAD")
 
     def next_position(self) -> Coordinate:
         next_x = self.x

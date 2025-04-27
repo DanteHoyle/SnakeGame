@@ -4,12 +4,8 @@ import time
 
 from snake.config import Config
 from snake.color import Color, ColorManager
-from snake.types import GameObject
 from snake.controls import SnakeController
-from snake.snake import SnakeHead
-from snake.food import SnakeFood
-from snake.boundary import Boundary
-from snake.text import TextManager
+from snake.gameobjects import SnakeHead, SnakeFood, Boundary, TextManager, GameObject
 from snake.state import SharedGameState, Status
 
 class SnakeGame:

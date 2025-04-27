@@ -1,6 +1,6 @@
 import curses
 # import logging
-from snake.snake import HeadDirection, SnakeHead
+from snake.gameobjects import HeadDirection, SnakeHead
 from snake.state import SharedGameState, Status
 
 class SnakeController:
